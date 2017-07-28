@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<tools>
+	<toolbox scope="request" xhtml="true">
+	<tool key="myCustomerTool" class="com.wjl.velocity.MyCustomerTool"/>
+	</toolbox>
+    <toolbox scope="session">  
+        <tool key="map" class="java.util.HashMap"/>  
+    </toolbox>  
+	<toolbox scope="application">
+		<tool class="org.apache.velocity.tools.generic.DateTool" />
+		<tool class="org.apache.velocity.tools.generic.ClassTool"
+			inspect="com.wjl.velocity.LoginAction" />
+	</toolbox>
+
+	<data type="number" key="version" value="1.1" />
+</tools>

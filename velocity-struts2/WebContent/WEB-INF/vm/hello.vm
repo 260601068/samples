@@ -1,0 +1,82 @@
+<html>
+    <head>
+        <title>Hello Velocity</title>
+        <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+    </head>
+    <body>
+    <h4>session中username为"中国"</h4>
+    ##"\"表示不解析当前的velocity指令
+    	\$username:$username  <br/>
+    ##velocity也有可以直接调用request,response,session,application域
+        \$request.username:$request.username  <br/>
+        \$session.username:$session.username  <br/>
+    <h4>velocity中引用的标准格式需要加{}并不是el表达式</h4>
+        \${request.username}:${request.username}  <br/>
+        \${session.username}:${session.username}  <br/>
+    <h4>velocity的数据获取</h4>
+        \#set($myArray=["wjl","dnf",23])  <br/>
+        \#set($myMap={"name":"wjl","gender":"man","age":27})  <br/>
+        #set($myArray=["wjl","dnf",23])
+        #set($myMap={"name":"wjl","gender":"man","age":27})
+        \$myArray.get(1):$myArray.get(1)  <br/>
+        \$myMap.gender:$myMap.gender  <br/>
+        <h4>#set指令中""号或是不加符号会被解析，但是''不会被解析</h4>
+        \#set($x='\$username')
+        #set($x='$username')  <br/>
+        \$x:$x  <br/>
+        \#set(\$x="\$username")
+        #set($x="$username")  <br/>
+        \$x:$x  <br/>
+        <h4>条件判断</h4>
+        #literal()
+        #if($username=="王家岭") <br/>
+        	username is 王家岭  <br/>
+        #else  <br/>
+        	username is not "王家岭"  <br/>
+        #end  <br/>
+        #end
+        result:
+        #if($username=="王家岭")
+        	username is 王家岭
+        #else
+        	username is not "王家岭"
+        #end
+        <h4>循环遍历myMap</h4>
+        #literal()
+        #foreach($mykey in $myMap.keySet())  <br/>
+        key:$mykey   value:$myMap.get($mykey)  count:$velocityCount  <br/>
+        #end  <br/><br/>
+        #end
+        #foreach($mykey in $myMap.keySet())
+        key:$mykey   value:$myMap.get($mykey) count:$velocityCount<br/>
+        #end  <br/>
+        #literal()
+        #foreach($entry in $myMap.entrySet())  <br/>
+        key:$entry.key   value:$entry.value  count:$velocityCount  <br/><br/>
+        #end
+        #end
+        #foreach($entry in $myMap.entrySet())
+        key:$entry.key   value:$entry.value  count:$velocityCount  <br/>
+        #end
+        <h4>\#include指令可引入任何类型文件不做模板解析,\#parse指令只能引入模板文件并解析</h4>
+        <h4>宏定义</h4>
+        #literal()
+        #macro(myMacro $name $color)  <br/>
+        &lt;span style="background-color:$color"&gt;$name&lt;/span&gt  <br/>
+        #end
+        #end  <br/>
+        #macro(myMacro $name $color)
+        <span style="background-color:$color">$name</span>
+        #end
+        \#myMacro("王家岭" "green"):#myMacro("王家岭" "green")
+        <hr/>
+        <h4>velocity tools</h4>
+        \$version:$version  <br/>
+        \$class.methods.get(1).name:$class.methods.get(1).name  <br/>
+        \$date.get("yyyy-M-d H:m:s"):$date.get("yyyy-M-d H:m:s")  <br/>
+        \$map.put("user","wjl")  <br/>
+        \$map.get("user"):$map.get("user")  <br/>
+        \$myCustomerTool.addStr("wjl","dnf"):$myCustomerTool.addStr("wjl","dnf")  <br/>
+		
+    </body>
+</html>
