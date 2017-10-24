@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<family>
+  <member relationship="father">
+    <name>父亲</name>
+    <age>50</age>
+  </member>
+  <member relationship="mother">
+    <name>母亲</name>
+    <age>47</age>
+  </member>
+  <member relationship="children">
+    <name>孩子</name>
+    <age>27</age>
+  </member>
+</family>

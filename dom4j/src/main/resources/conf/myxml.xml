@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bookstore>
+<book>
+  <title lang="eng">Harry Potter</title>
+  <price>29.99</price>
+</book>
+<book>
+  <title lang="eng">Learning XML</title>
+  <price>39.95</price>
+</book>
+<manager>
+	<boss num="1" master="true">
+		<name>王家岭</name>
+		<age>27</age>
+	</boss>
+	<employee gender="male">小明</employee>
+	<employee gender="female">小霞</employee>
+	<employee gender="male">
+		<name value="小王">
+			<employee gender="male">小小王</employee>
+		</name>
+	</employee>
+</manager>
+</bookstore>
