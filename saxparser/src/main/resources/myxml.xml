@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <books xmlns="http://www.megginson.com/ns/exp/poetry">
-	<book id="12">
+	<book ids="12">
 		<name>thinking in java</name>
 		<price>85.5</price>
 	</book>

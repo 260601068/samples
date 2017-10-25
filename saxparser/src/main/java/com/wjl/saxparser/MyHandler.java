@@ -10,7 +10,8 @@ import org.xml.sax.ext.DefaultHandler2;
 /*从上到下依次解析xml文档的每个部分并调用相应的处理方法；
 解析xml文档正式（非<xml>标签）的第一个标签前和最后一个标签后会分别调用startDocument()和endDocument()仅一次；
 解析到每一个前置标签时会调用startElement()方法一次，对应的结束标签时会调用endElement()方法一次；
-解析到每一对标签之间内容或结束标签之后内容（注意）时，只要该内容存在（包括空格和换行，即前后标签非紧密直接相连）都会调用characters()方法一次*/
+解析到每一对标签之间内容或结束标签之后内容（注意）时，只要该内容存在（包括空格和换行，即前后标签非紧密直接相连）都会调用characters()方法一次
+Sax解析xml的方式只能用于查询数据，不能用于xml文档数据的增删改*/
 public class MyHandler extends DefaultHandler2{
 	
 	private List<Book> books;
