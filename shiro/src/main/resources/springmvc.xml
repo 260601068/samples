@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:mvc="http://www.springframework.org/schema/mvc"
+	xsi:schemaLocation="http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc-4.3.xsd
+		http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-4.3.xsd">
+
+<context:component-scan base-package="com.wjl.shiro"></context:component-scan>
+
+<!-- 使用shiro框架时前端页面不要放在WEB-INF目录中，不然很难跳转成功 -->
+<bean class="org.springframework.web.servlet.view.InternalResourceViewResolver">
+<property name="prefix" value="/"></property>
+<property name="suffix" value=".jsp"></property>
+</bean>
+
+<mvc:annotation-driven/>
+<mvc:default-servlet-handler/>
+
+<!-- 开启shiro的注解，必须配置在springmvc的配置文件中，配置在spring的配置文件中无效；
+	  其中的引用securityManager会自动从父容器中找到 -->
+<bean class="org.springframework.aop.framework.autoproxy.DefaultAdvisorAutoProxyCreator" depends-on="lifecycleBeanPostProcessor">
+<property name="proxyTargetClass" value="true" />
+</bean>
+<bean class="org.apache.shiro.spring.security.interceptor.AuthorizationAttributeSourceAdvisor">
+    <property name="securityManager" ref="securityManager"/>
+</bean>
+
+<!-- 程序出现错误后的跳转页面设置 -->
+<bean class="org.springframework.web.servlet.handler.SimpleMappingExceptionResolver">
+<property name="exceptionMappings">  
+    <props>  
+        <prop key="org.apache.shiro.authz.UnauthenticatedException">  
+        <!-- 认证错误时跳转的页面   -->
+            unauthenticated
+        </prop>  
+        <prop key="org.apache.shiro.authz.UnauthorizedException">  
+		<!-- 没有权限时跳转的页面   -->
+            unauthorized
+        </prop>  
+    </props>  
+</property> 
+<!-- 默认的出错后跳转的页面 -->
+<property name="defaultErrorView" value="404"></property>
+</bean>
+</beans>

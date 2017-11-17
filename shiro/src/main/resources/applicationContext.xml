@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:mvc="http://www.springframework.org/schema/mvc"
+	xmlns:tx="http://www.springframework.org/schema/tx"
+	xsi:schemaLocation="http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc-4.3.xsd
+		http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-4.3.xsd
+		http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-4.3.xsd">
+
+<bean id="securityManager" class="org.apache.shiro.web.mgt.DefaultWebSecurityManager">
+<!-- 加入缓存后，每次在判断权限（非认证）时会先从缓存中获取当前的授权，如果缓存中存在则不再执行realm的授权方法doGetAuthorizationInfo；
+	  实现CacheManagerAware的类会被缓存，其中包括Realm的实现类，用户可自定义session的缓存 -->
+<property name="cacheManager" ref="cacheManager"></property>
+<property name="realm" ref="jdbcRealm"></property>
+<!-- 如果有多个realm需要做认证，则可以添加realms属性并去掉realm属性，其中list中的realm依次执行
+<property name="realms">
+<list>
+	<ref bean="jdbcRealm"/>
+	<ref bean="secondRealm"/>
+</list>
+</property> 
+-->
+<!-- 如果配置多个realm的认证，则可以配置多realm的认证策略（也可以不配置，默认为AtLeastOneSuccessfulStrategy）
+<property name="authenticator" ref="authenticator"></property> 
+-->
+<property name="rememberMeManager.cookie.maxAge" value="20"></property>
+</bean>
+
+<bean id="cacheManager" class="org.apache.shiro.cache.ehcache.EhCacheManager">
+    <property name="cacheManagerConfigFile" value="classpath:ehcache.xml"/>
+</bean>
+
+<!-- 配置多个realm的认证策略，默认为AtLeastOneSuccessfulStrategy，这里也可以配置多realm的认证
+<bean id="authenticator" class="org.apache.shiro.authc.pam.ModularRealmAuthenticator">
+<property name="authenticationStrategy">
+<bean class="org.apache.shiro.authc.pam.AllSuccessfulStrategy"></bean>
+</property>
+</bean>
+ -->
+<bean id="jdbcRealm" class="com.wjl.shiro.realm.ShiroRealm">
+<!-- 使用MD5加密会将前端传来的密码自动做MD5加密后再与后台（可能是数据库中保存的密码）做比较，hashIterations表示加密次数，
+	   如果不需要加密则可以不配置credentialsMatcher -->
+<property name="credentialsMatcher">
+<bean class="org.apache.shiro.authc.credential.HashedCredentialsMatcher">
+<property name="hashAlgorithmName" value="MD5"></property>
+<property name="hashIterations" value="1024"></property>
+</bean>
+</property>
+</bean>
+
+<bean id="lifecycleBeanPostProcessor" class="org.apache.shiro.spring.LifecycleBeanPostProcessor"/>
+
+<!-- 该bean的id必须与在web.xml中定义的过滤器DelegatingFilterProxy的filter-name名完全相同 -->
+<bean id="shiroFilter" class="org.apache.shiro.spring.web.ShiroFilterFactoryBean">
+    <property name="securityManager" ref="securityManager"/>
+    <property name="loginUrl" value="/login.jsp"/>
+    <!-- 登录成功的页面 -->
+    <property name="successUrl" value="/list.jsp"/>
+    <!-- 没有权限访问，返回的页面，仅对该处的错误跳转有效，对于使用shiro注解权限验证方法 的错误跳转无效-->
+    <property name="unauthorizedUrl" value="/unauthorized.jsp"/>
+    <!-- 定义shiro的权限控制规则，格式 为  [url（相对路径）] = [过滤器别名] ，
+    	 anon表示可以匿名访问，logout表示登出（清除缓存和session），authc表示必须登录（认证）后才能访问（"记住我"无效）
+    	  ，user表示已验证或"记住我"后都可以访问，roles[*]表示具有*的角色才能访问（没有user拦截器，"记住我"功能也会生效）；
+    	   如果需要从数据库获取权限定义则可以使用以下属性的定义：
+    	 <property name="filterChainDefinitionMap" ref="filterChainDefinitionMap"></property>
+    -->
+    <property name="filterChainDefinitions">
+        <value>
+			/login.jsp = anon
+			/shiro/login = anon
+			/shiro/logout = logout
+			<!-- 表示当前必须登录认证（"记住我"无效）并且需要user角色才能访问user.jsp页面 -->
+			/user.jsp = authc,roles[user]
+			/admin.jsp = roles[admin]
+			/** = authc
+        </value>
+    </property>
+</bean>
+<!-- 从数据库获取权限定义相关，使用工厂bean的方式创建Map（factory-bean属性不能直接写bean的全类名）
+<bean id="filterChainDefinitionMap" factory-bean="filterChainDefinitionMapBulder" factory-method="filterChainDefinitionMap"></bean>
+<bean id="filterChainDefinitionMapBulder" class="com.wjl.shiro.factory.filterChainDefinitionMapBuilder"></bean> 
+-->
+</beans>
