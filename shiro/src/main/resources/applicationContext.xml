@@ -40,8 +40,12 @@
 </bean>
  -->
 <bean id="jdbcRealm" class="com.wjl.shiro.realm.ShiroRealm">
-<!-- 使用MD5加密会将前端传来的密码自动做MD5加密后再与后台（可能是数据库中保存的密码）做比较，hashIterations表示加密次数，
-	   如果不需要加密则可以不配置credentialsMatcher -->
+<!-- 使用MD5加密会将前端传来的密码自动做MD5加密后再与后台（可能是数据库中保存的密码）做比较，hashIterations表示加密次数；
+     如果不需要加密则可以不配置credentialsMatcher，则会将前端传来的密码的明文自动与后台的credentials直接做比较，相同则验证通过；
+     如果不想shiro框架自动验证密码，则可以让credentialsMatcher属性引用一个继承自HashedCredentialsMatcher的自定义类，并让该类
+     的doCredentialsMatch方法直接返回true（不做验证），然后可以在realm中的doGetAuthenticationInfo方法中加密前端的密码与
+     数据库中查询的密码做比来做密码的手动验证后，返回new SimpleAuthenticationInfo(username, password（可为任意值）, getName());
+ -->
 <property name="credentialsMatcher">
 <bean class="org.apache.shiro.authc.credential.HashedCredentialsMatcher">
 <property name="hashAlgorithmName" value="MD5"></property>
