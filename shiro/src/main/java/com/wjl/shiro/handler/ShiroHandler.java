@@ -35,7 +35,7 @@ public class ShiroHandler {
 			     但是对于敏感页面通常仍需要设置成必须登录（认证）才能访问，即使开启"记住我"也没用；
 			  "记住我"功能是利用在浏览器中写cookie实现*/
 			token.setRememberMe(true);
-			try{
+			try{  //执行login方法时会依次执行realm中的doGetAuthenticationInfo和doGetAuthorizationInfo方法
 				curUser.login(token);
 			}catch(UnknownAccountException uae){
 				System.out.println("账户不存在");
